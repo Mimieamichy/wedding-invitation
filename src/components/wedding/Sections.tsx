@@ -524,8 +524,12 @@ export function LiveLocation() {
 /* ---------------- PROGRAMME ---------------- */
 const PROGRAMME = [
   { t: "10:00 AM", e: "Guest Arrival" },
-  { t: "10:00 AM Prompt", e: "Nikkah Ceremony" },
-  { t: "After Nikkah", e: "Reception" },
+  { t: "10:15 AM", e: "Nikkah Ceremony Begins" },
+  { t: "11:00 AM", e: "Prayers & Quran Recitation" },
+  { t: "11:30 AM", e: "Marriage Contract Signing" },
+  { t: "12:00 PM", e: "Walima Reception" },
+  { t: "12:45 PM", e: "Lunch Serving" },
+  { t: "2:00 PM", e: "Closing & Farewell" },
 ];
 export function Programme() {
   return (
@@ -534,7 +538,7 @@ export function Programme() {
         <SectionTitle eyebrow="Order of the Day" title="Wedding Programme" />
         <div className="relative mt-12 pl-6">
           <motion.div
-            className="absolute left-2 top-0 w-px bg-gradient-to-b from-[oklch(0.5_0.18_260)] to-transparent origin-top"
+            className="absolute left-0 top-0 w-px bg-gradient-to-b from-[oklch(0.5_0.18_260)] to-transparent origin-top"
             initial={{ scaleY: 0 }}
             whileInView={{ scaleY: 1 }}
             viewport={{ once: true }}
@@ -545,7 +549,6 @@ export function Programme() {
             {PROGRAMME.map((p, i) => (
               <Reveal key={p.t} delay={i * 0.08}>
                 <li className="relative">
-                  <span className="absolute -left-[19px] top-2 h-3 w-3 rounded-full bg-gradient-gold shadow-luxe" />
                   <p className="text-xs tracking-[0.3em] uppercase text-gold-deep">{p.t}</p>
                   <p className="mt-1 font-display text-2xl text-mocha">{p.e}</p>
                 </li>
@@ -559,7 +562,9 @@ export function Programme() {
 }
 
 /* ---------------- GUEST WISHES ---------------- */
-const WISHES = [
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
+
+const DEFAULT_WISHES = [
   { name: "Khadijah", text: "May Allah bless your union with mercy, love, and tranquility." },
   { name: "Ibrahim", text: "Barakallahu lakuma — wishing you a lifetime of joy." },
   { name: "Aisha", text: "Two beautiful souls becoming one. Congratulations!" },
@@ -567,15 +572,130 @@ const WISHES = [
 ];
 export function Wishes() {
   const [i, setI] = useState(0);
+  const [name, setName] = useState("");
+  const [text, setText] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  
+  // Load wishes (will switch to Supabase once config is set)
+  const [wishes, setWishes] = useState(() => {
+    try {
+      const saved = localStorage.getItem("weddingWishes");
+      return saved ? [...DEFAULT_WISHES, ...JSON.parse(saved)] : DEFAULT_WISHES;
+    } catch {
+      return DEFAULT_WISHES;
+    }
+  });
+  
   useEffect(() => {
-    const t = setInterval(() => setI((x) => (x + 1) % WISHES.length), 5000);
+    const t = setInterval(() => setI((x) => (x + 1) % wishes.length), 5000);
     return () => clearInterval(t);
-  }, []);
-  const w = WISHES[i];
+  }, [wishes]);
+  
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name.trim() || !text.trim()) {
+      toast.error("Please enter both your name and a wish!");
+      return;
+    }
+    
+    setIsSubmitting(true);
+    
+    try {
+      // TODO: Replace with Supabase insert once we have the config
+      const newWish = { name: name.trim(), text: text.trim(), created_at: new Date().toISOString() };
+      
+      // For now, we'll still use localStorage as fallback
+      const updatedWishes = [...wishes, newWish];
+      setWishes(updatedWishes);
+      
+      const userWishes = updatedWishes.slice(DEFAULT_WISHES.length);
+      localStorage.setItem("weddingWishes", JSON.stringify(userWishes));
+      
+      setI(updatedWishes.length - 1);
+      setIsDialogOpen(false);
+      toast.success("Your wish has been sent!");
+    } catch (error) {
+      console.error("Error submitting wish:", error);
+      toast.error("Something went wrong! Please try again.");
+    } finally {
+      setName("");
+      setText("");
+      setIsSubmitting(false);
+    }
+  };
+  
+  const w = wishes[i];
   return (
     <section className="relative py-24 sm:py-32 bg-gradient-soft">
       <div className="mx-auto max-w-3xl px-6">
         <SectionTitle eyebrow="From Loved Ones" title="Guest Wishes" />
+        
+        {/* Write a Wish Button */}
+        <Reveal>
+          <div className="mt-10 text-center">
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <DialogTrigger asChild>
+                <Button className="rounded-full bg-gradient-gold text-ivory px-8 py-4 text-sm tracking-[0.2em] uppercase shadow-luxe">
+                  Write a Wish
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-md">
+                <DialogHeader>
+                  <DialogTitle className="font-script text-3xl text-center text-gold-gradient">
+                    Write Your Wish
+                  </DialogTitle>
+                </DialogHeader>
+                <form onSubmit={handleSubmit} className="space-y-4 pt-4">
+                  <div>
+                    <label htmlFor="wishName" className="text-xs tracking-[0.3em] uppercase text-gold-deep">Your Name</label>
+                    <input
+                      id="wishName"
+                      type="text"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      className="mt-2 w-full rounded-2xl border border-mocha/20 bg-ivory/70 px-4 py-3 text-mocha outline-none focus:border-gold-deep focus:ring-2 focus:ring-gold-deep/20"
+                      placeholder="Enter your name"
+                      disabled={isSubmitting}
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="wishText" className="text-xs tracking-[0.3em] uppercase text-gold-deep">Your Wish</label>
+                    <textarea
+                      id="wishText"
+                      value={text}
+                      onChange={(e) => setText(e.target.value)}
+                      className="mt-2 w-full rounded-2xl border border-mocha/20 bg-ivory/70 px-4 py-3 text-mocha outline-none focus:border-gold-deep focus:ring-2 focus:ring-gold-deep/20"
+                      placeholder="Write your wish for the couple..."
+                      rows={4}
+                      disabled={isSubmitting}
+                    />
+                  </div>
+                  <div className="flex gap-3 pt-2">
+                    <DialogClose asChild>
+                      <Button
+                        variant="outline"
+                        disabled={isSubmitting}
+                        className="flex-1 rounded-full border border-gold-deep/30 text-gold-deep"
+                      >
+                        Cancel
+                      </Button>
+                    </DialogClose>
+                    <Button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="flex-1 rounded-full bg-gradient-gold text-ivory"
+                    >
+                      {isSubmitting ? "Sending..." : "Send Wish"}
+                    </Button>
+                  </div>
+                </form>
+              </DialogContent>
+            </Dialog>
+          </div>
+        </Reveal>
+        
+        {/* Wishes Carousel */}
         <div className="mt-12 relative h-56">
           <AnimatePresence mode="wait">
             <motion.div
@@ -594,7 +714,7 @@ export function Wishes() {
           </AnimatePresence>
         </div>
         <div className="mt-6 flex justify-center gap-2">
-          {WISHES.map((_, idx) => (
+          {wishes.map((_, idx) => (
             <button
               key={idx}
               onClick={() => setI(idx)}

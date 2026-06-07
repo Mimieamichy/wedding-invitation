@@ -40,19 +40,47 @@ export function RsvpForm() {
     defaultValues: { fullName: "", phone: "", guests: 1, attend: undefined as unknown as "yes" },
   });
 
-  function onSubmit(_v: Values) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  async function onSubmit(v: Values) {
     if (isPastDeadline) return;
-    setDone(true);
-    const burst = (origin: { x: number; y: number }) =>
-      confetti({
-        particleCount: 80,
-        spread: 70,
-        origin,
-        colors: ["#1e3a8a", "#2563eb", "#60a5fa", "#ffffff"],
-      });
-    burst({ x: 0.2, y: 0.7 });
-    burst({ x: 0.8, y: 0.7 });
-    setTimeout(() => burst({ x: 0.5, y: 0.5 }), 200);
+    
+    setIsSubmitting(true);
+    
+    try {
+      const webhookUrl = import.meta.env.VITE_RSVP_WEBHOOK_URL;
+      
+      if (webhookUrl) {
+        const formData = new URLSearchParams();
+        formData.append('name', v.fullName);
+        formData.append('phone', v.phone);
+        formData.append('guests', String(v.guests));
+        formData.append('attending', v.attend);
+        
+        await fetch(webhookUrl, {
+          method: 'POST',
+          mode: 'no-cors',
+          body: formData,
+        });
+      }
+      
+      setDone(true);
+      const burst = (origin: { x: number; y: number }) =>
+        confetti({
+          particleCount: 80,
+          spread: 70,
+          origin,
+          colors: ["#1e3a8a", "#2563eb", "#60a5fa", "#ffffff"],
+        });
+      burst({ x: 0.2, y: 0.7 });
+      burst({ x: 0.8, y: 0.7 });
+      setTimeout(() => burst({ x: 0.5, y: 0.5 }), 200);
+    } catch (error) {
+      console.error("Error submitting RSVP:", error);
+      alert("Something went wrong! Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   if (done) {
@@ -163,9 +191,10 @@ export function RsvpForm() {
         </div>
         <Button
           type="submit"
+          disabled={isSubmitting}
           className="w-full h-12 text-base bg-gradient-gold text-ivory border-0 shadow-luxe shimmer"
         >
-          Send my RSVP
+          {isSubmitting ? "Submitting..." : "Send my RSVP"}
         </Button>
       </form>
     </Form>

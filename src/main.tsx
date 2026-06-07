@@ -1,5 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import { createRoot } from "react-dom/client";
 import { Toaster } from "@/components/ui/sonner";
 import { EnvelopeOpening } from "@/components/wedding/Envelope";
 import { MusicPlayer } from "@/components/wedding/MusicPlayer";
@@ -18,20 +18,9 @@ import {
   Story,
   Wishes,
 } from "@/components/wedding/Sections";
+import "@/styles.css";
 
-export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "Sobirat & Habibulah — Wedding Invitation" },
-      { name: "description", content: "A beautiful wedding invitation. 27 June 2026, Lafia, Nassarawa State." },
-      { property: "og:title", content: "Sobirat & Habibulah — Wedding Invitation" },
-      { property: "og:description", content: "Open the envelope and celebrate with us." },
-    ],
-  }),
-  component: Index,
-});
-
-function Index() {
+function App() {
   const [opened, setOpened] = useState(false);
   return (
     <main className="relative bg-background text-foreground">
@@ -54,3 +43,5 @@ function Index() {
     </main>
   );
 }
+
+createRoot(document.getElementById("root")!).render(<App />);
