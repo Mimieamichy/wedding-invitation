@@ -1,5 +1,4 @@
-// Set Rollup to skip native modules
-process.env.ROLLUP_SKIP_NATIVE = "1";
+
 
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
