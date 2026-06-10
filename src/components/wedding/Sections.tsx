@@ -3,7 +3,6 @@ import {
   Calendar,
   Clock,
   Copy,
-  Facebook,
   MapPin,
   MessageCircle,
   Phone,
@@ -18,7 +17,6 @@ import coupleImg from "@/assets/couple-hero.png";
 import brideImg from "@/assets/bride.png";
 import patternUrl from "@/assets/pattern-gold.jpg";
 import storyMeeting from "@/assets/story-meeting.jpg";
-import storyFriendship from "@/assets/story-friendship.jpg";
 import storyEngagement from "@/assets/story-engagement.jpg";
 import storyWedding from "@/assets/story-wedding.jpg";
 
@@ -195,10 +193,9 @@ export function CoupleIntro() {
 
 /* ---------------- STORY ---------------- */
 const STORY = [
-  { title: "First Meeting", date: "Spring 2022", body: "A quiet moment in a garden — a glance, a smile, and a question only Allah could answer.", img: storyMeeting },
-  { title: "Friendship", date: "Summer 2023", body: "Long walks under blossoms turned into the kind of friendship that feels like home.", img: storyFriendship },
-  { title: "Engagement", date: "Ramadan 2025", body: "By candlelight, a promise was made and sealed with a golden ring.", img: storyEngagement },
-  { title: "Wedding Journey", date: "December 2026", body: "Under a floral arch, two families become one — by His grace.", img: storyWedding },
+  { title: "First Meeting", date: "December 2023", body: "We first met on a committee WhatsApp platform before eventually meeting in person in December 2023 at the Ansar-Ud-Deen Northern States Council Conference in Suleja. At the time, he was a very shy person who hardly spoke, but despite that, we became friends.", img: storyMeeting },
+  { title: "Our Journey Begins", date: "February 2024", body: "As the weeks passed, our friendship grew stronger. Then, in February, he finally gathered the courage to ask me out, and I happily agreed. From that moment, our #Oyeola journey began, a beautiful story of two hearts gradually becoming one.", img: storyEngagement },
+  { title: "A Beautiful Bond", date: "Today", body: "What started as a simple friendship blossomed into a bond built on trust, understanding, and genuine affection. Today, our story stands as a reminder that sometimes the most beautiful relationships begin in the most unexpected ways. ❤️✨", img: storyWedding },
 ];
 
 export function Story() {
@@ -386,8 +383,34 @@ export function Family() {
 
 /* ---------------- BRIDAL PARTY ---------------- */
 const PARTY = {
-  bridesmaids: ["Aisha", "Zainab", "Mariam", "Hauwa"],
-  groomsmen: ["Yusuf", "Hassan", "Bilal", "Ismail"],
+  bridesmaids: [
+    "Rukayah",
+    "Maryam",
+    "Maryam",
+    "Amarachy",
+    "Maryam",
+    "Hafsah",
+    "Nafisah",
+    "Saadatu",
+    "Barakah",
+    "Aisha",
+    "Kabirah"
+  ],
+  groomsmen: [
+    "Olalere",
+    "DKF",
+    "Oriyomi",
+    "Habib",
+    "Shomoye",
+    "Reload",
+    "Mubarak",
+    "Ibrahim",
+    "Prince",
+    "Dudusky",
+    "Olaoluwa",
+    "Hammed",
+    "Habib"
+  ],
 };
 function Avatar({ name, accent }: { name: string; accent: "blush" | "gold" }) {
   const initials = name.slice(0, 1);
@@ -418,13 +441,13 @@ export function BridalParty() {
           <Reveal>
             <h3 className="text-center font-display text-2xl text-gold-deep">Bridesmaids</h3>
             <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-5">
-              {PARTY.bridesmaids.map((n) => <Avatar key={n} name={n} accent="blush" />)}
+              {PARTY.bridesmaids.map((n, i) => <Avatar key={`${n}-${i}`} name={n} accent="blush" />)}
             </div>
           </Reveal>
           <Reveal delay={0.1}>
             <h3 className="text-center font-display text-2xl text-gold-deep">Groomsmen</h3>
             <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-5">
-              {PARTY.groomsmen.map((n) => <Avatar key={n} name={n} accent="gold" />)}
+              {PARTY.groomsmen.map((n, i) => <Avatar key={`${n}-${i}`} name={n} accent="gold" />)}
             </div>
           </Reveal>
         </div>
@@ -452,7 +475,7 @@ export function Rsvp() {
 
 /* ---------------- GIFTS ---------------- */
 export function Gifts() {
-  const acct = { bank: "Guaranty Trust Bank", number: "0123456789", name: "Fatimah Adeyemi" };
+  const acct = { bank: "OPay", number: "9033463064", name: "Sobirat Abdussalam" };
   const copy = (text: string, label: string) => {
     navigator.clipboard.writeText(text);
     toast.success(`${label} copied!`);
@@ -745,25 +768,14 @@ export function Footer() {
           We look forward to celebrating with you.
         </p>
         <FloralDivider className="mt-6" />
-        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="mt-8 grid grid-cols-1 md:grid-cols-1 gap-4 max-w-md mx-auto">
           <div className="rounded-2xl glass gold-border p-6">
             <p className="font-script text-3xl text-gold-gradient mb-2">Sobirat Olanike</p>
             <div className="flex flex-wrap justify-center gap-3">
-              <a href="tel:+2348000000000" className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm text-mocha hover:text-gold-deep transition shadow-soft border border-gold-deep/30">
+              <a href="tel:+2349033463064" className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm text-mocha hover:text-gold-deep transition shadow-soft border border-gold-deep/30">
                 <Phone className="h-4 w-4" /> Call
               </a>
-              <a href="https://wa.me/2348000000000" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm text-mocha hover:text-gold-deep transition shadow-soft border border-gold-deep/30">
-                <MessageCircle className="h-4 w-4" /> WhatsApp
-              </a>
-            </div>
-          </div>
-          <div className="rounded-2xl glass gold-border p-6">
-            <p className="font-script text-3xl text-gold-gradient mb-2">Habibulah Oyewale</p>
-            <div className="flex flex-wrap justify-center gap-3">
-              <a href="tel:+2348000000001" className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm text-mocha hover:text-gold-deep transition shadow-soft border border-gold-deep/30">
-                <Phone className="h-4 w-4" /> Call
-              </a>
-              <a href="https://wa.me/2348000000001" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm text-mocha hover:text-gold-deep transition shadow-soft border border-gold-deep/30">
+              <a href="https://wa.me/2349033463064" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm text-mocha hover:text-gold-deep transition shadow-soft border border-gold-deep/30">
                 <MessageCircle className="h-4 w-4" /> WhatsApp
               </a>
             </div>
